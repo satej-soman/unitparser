@@ -14,12 +14,11 @@ class Unit(object):
 		self.cd = cd
 		self.scalar = scalar
 
+	@property
 	def dimensions(self):
 		return [self.m, self.kg, self.s, self.A, self.K, self.mol, self.cd]
 
-	def compatibleWith(self, other):
-		return self.dimensions() == other.dimensions()
-
+	@property
 	def units(self):
 		positives, negatives = [], []
 		dims = self.dimensions()
@@ -31,13 +30,16 @@ class Unit(object):
 
 		bridge = " per " if negatives else ""
 		return '-'.join(positives) + bridge + '-'.join(negatives)
+	
+	def compatibleWith(self, other):
+		return self.dimensions == other.dimensions
 
 	def __repr__(self):
-		return str(self.scalar) + ' ' + self.units()
+		return str(self.scalar) + ' ' + self.units
 
 	def __eq__(self, other):
-		return self.dimensions() == other.dimensions() and \
-			   self.quantities() == other.quantities()
+		return self.dimensions == other.dimensions and \
+			   self.scalar == other.scalar
 
 	def __add__(self, other):
 		if self.compatibleWith(other):
