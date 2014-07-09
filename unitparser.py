@@ -18,10 +18,10 @@ class Unit(object):
 	def dimensions(self):
 		return [self.m, self.kg, self.s, self.A, self.K, self.mol, self.cd]
 
-	@property
+	
 	def units(self):
 		positives, negatives = [], []
-		dims = self.dimensions()
+		dims = self.dimensions
 		for d in Unit.basisOrdering:
 			q = self.__getattribute__(d)
 			if q != 0:
@@ -35,7 +35,7 @@ class Unit(object):
 		return self.dimensions == other.dimensions
 
 	def __repr__(self):
-		return str(self.scalar) + ' ' + self.units
+		return str(self.scalar) + ' ' + self.units()
 
 	def __eq__(self, other):
 		return self.dimensions == other.dimensions and \
@@ -43,7 +43,7 @@ class Unit(object):
 
 	def __add__(self, other):
 		if self.compatibleWith(other):
-			return Unit(*self.dimensions(), scalar = self.scalar + other.scalar)
+			return Unit(*self.dimensions, scalar = self.scalar + other.scalar)
 		else: 
 			msg = self.units() + " is not compatible with " + other.units()
 			raise UnitCompatibilityError(msg)
@@ -51,17 +51,17 @@ class Unit(object):
 	def __mul__(self, other):
 		if type(other) is not Unit:
 			return self.__rmul__(other)
-		dims = map(lambda x, y: x+y, self.dimensions(), other.dimensions())
+		dims = map(lambda x, y: x+y, self.dimensions, other.dimensions)
 		return Unit(*dims, scalar = self.scalar*other.scalar)	
 
 	def __rmul__(self, other):
-		return Unit(*self.dimensions(), scalar = other*self.scalar)
+		return Unit(*self.dimensions, scalar = other*self.scalar)
 	
 	def __div__(self, other):
 		return self.__mul__(other**-1)
 
 	def __pow__(self, p):
-		return Unit(*map(lambda x: x*p, self.dimensions()))
+		return Unit(*map(lambda x: x*p, self.dimensions))
 
 class Derived(Unit):
 	#static fields
@@ -72,12 +72,12 @@ class Derived(Unit):
 	}
 
 	def __init__(self, u):
-		Unit.__init__(self, *u.dimensions(), scalar = u.scalar)
+		Unit.__init__(self, *u.dimensions, scalar = u.scalar)
 
 	def units(self):
 		tokens = {}
 		positives, negatives = [],[]
-		dims = self.dimensions()
+		dims = self.dimensions
 		for d in Unit.basisOrdering:
 			q = self.__getattribute__(d)
 			if q != 0:
